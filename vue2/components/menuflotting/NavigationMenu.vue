@@ -1,187 +1,95 @@
 <template>
-  <nav class="nav-menu">
-    <input type="checkbox" class="menu-toggle" v-model="isMenuOpen" id="menu-toggle" />
-    <label class="menu-toggle-button" for="menu-toggle">
-      <span class="line line-1"></span>
-      <span class="line line-2"></span>
-      <span class="line line-3"></span>
-    </label>
-
-    <a href="#" v-for="(item, idx) in navItems" :key="idx" :class="['nav-item', item.theme]"
-      :style="calculateItemPosition(idx, navItems.length)" @click.prevent="item.handleClick">
-      <i :class="item.symbol"></i>
-    </a>
-  </nav>
+  <div class="radial-menu">
+    <button class="main-button" @click="toggleMenu">
+      <i :class="isOpen ? 'fa fa-times' : 'fa fa-bars'"></i> 
+    </button>
+    <div v-if="isOpen" class="menu-options">
+      <button
+        class="menu-button"
+        v-for="(icon, index) in icons"
+        :key="index"
+        :style="buttonPosition(index)"
+      >
+        <i :class="icon"></i>
+      </button>
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "NavigationMenu",
-  props: {
-    navItems: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-  },
   data() {
     return {
-      isMenuOpen: false,
-      distance: 100,
+      isOpen: false,
+      icons: ["fa fa-map-marker", "fa fa-video-camera", "fa fa-camera", "fa fa-comment"],
     };
   },
   methods: {
-    calculateItemPosition(index, totalItems) {
-      if (!this.isMenuOpen) {
-        return {
-          transform: `translate3d(0px, 0px, 0)`
-        };
-      }
-
-      const angle = (index / totalItems) * 2 * Math.PI;
-      const x = this.distance * Math.cos(angle);
-      const y = this.distance * Math.sin(angle);
-
+    toggleMenu() {
+      this.isOpen = !this.isOpen;
+    },
+    buttonPosition(index) {
+      const radius = 160; 
+      const totalIcons = this.icons.length;
+      const angleSpan = -90;
+      const angleBetweenIcons = angleSpan / (totalIcons - 1); 
+      const angle = (index * angleBetweenIcons + angleSpan) * (Math.PI / 180); // Convert to radians
       return {
-        transform: `translate3d(${x}px, ${y}px, 0)`
+        transform: `translate(${radius * Math.cos(angle)}px, ${radius * Math.sin(angle)}px)`,
       };
     },
   },
 };
 </script>
 
-<style scoped>
-body {
-  padding: 0;
-  margin: 0;
-  background: #4b5563;
-  color: #e0e0e0;
-  text-align: center;
-  font-family: "Roboto", sans-serif;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.nav-item,
-.menu-toggle-button {
-  background: #e0e0e0;
-  border-radius: 50%;
-  width: 70px;
-  height: 70px;
-  margin-left: -35px;
-  position: absolute;
-  color: #ffffff;
-  text-align: center;
-  line-height: 70px;
-  transform: translate3d(0, 0, 0);
-  transition: transform ease-out 150ms;
-}
-
-.menu-toggle {
-  display: none;
-}
-
-.line {
-  width: 24px;
-  height: 3px;
-  background: #4b5563;
-  display: block;
-  position: absolute;
+<style lang="less" scoped>
+.radial-menu {
+  position: fixed;
   top: 50%;
   left: 50%;
-  margin-left: -12px;
-  margin-top: -1.5px;
-  transition: transform 150ms;
-}
+  transform: translate(-50%, -50%);
 
-.line-1 {
-  transform: translate3d(0, -8px, 0);
-}
+  .main-button {
+    width: 80px; /* Size of the button */
+    height: 80px; /* Size of the button */
+    border-radius: 50%;
+    background-color: #fff;
+    border: none;
+    font-size: 30px; /* Font size */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 
-.line-2 {
-  transform: translate3d(0, 0, 0);
-}
+    i {
+      color: #666; /* Color of the icon */
+    }
+  }
 
-.line-3 {
-  transform: translate3d(0, 8px, 0);
-}
+  .menu-options {
+    position: absolute;
+    top: 0;
+    left: 0;
 
-.menu-toggle:checked+.menu-toggle-button .line-1 {
-  transform: translate3d(0, 0, 0) rotate(45deg);
-}
+    .menu-button {
+      width: 60px; /* Icon size */
+      height: 60px; /* Icon size */
+      border-radius: 50%;
+      background-color: #eee;
+      border: none;
+      cursor: pointer;
+      position: absolute;
+      transition: transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-.menu-toggle:checked+.menu-toggle-button .line-2 {
-  transform: translate3d(0, 0, 0) scale(0.1, 1);
-}
-
-.menu-toggle:checked+.menu-toggle-button .line-3 {
-  transform: translate3d(0, 0, 0) rotate(-45deg);
-}
-
-.nav-menu {
-  margin: auto;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 70px;
-  height: 70px;
-  text-align: center;
-  font-size: 24px;
-}
-
-.nav-item:hover {
-  background: #e0e0e0;
-  color: #4285f4;
-}
-
-.menu-toggle-button {
-  z-index: 2;
-  transition-duration: 350ms;
-  transform: scale(1.1) translate3d(0, 0, 0);
-  cursor: pointer;
-  box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.12);
-}
-
-.menu-toggle-button:hover {
-  transform: scale(1.2) translate3d(0, 0, 0);
-}
-
-.menu-toggle:checked~.nav-item {
-  transition-timing-function: cubic-bezier(0.935, 0, 0.34, 1.33);
-}
-
-.navy {
-  background-color: #5470c6;
-  box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.12);
-}
-
-.forest {
-  background-color: #5cb85c;
-  box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.12);
-}
-
-.crimson {
-  background-color: #dc3545;
-  box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.12);
-}
-
-.violet {
-  background-color: #7d5bae;
-  box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.12);
-}
-
-.amber {
-  background-color: #ffc107;
-  box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.12);
-}
-
-.sky {
-  background-color: #56ccf2;
-  box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.12);
+      i {
+        font-size: 30px; /* Font size of icon */
+        color: #666;
+      }
+    }
+  }
 }
 </style>
