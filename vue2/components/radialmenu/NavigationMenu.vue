@@ -33,7 +33,7 @@ export default {
       const totalIcons = this.icons.length;
       const angleSpan = -90;
       const angleBetweenIcons = angleSpan / (totalIcons - 1); 
-      const angle = (index * angleBetweenIcons + angleSpan) * (Math.PI / 180); // Convert to radians
+      const angle = (index * angleBetweenIcons + angleSpan) * (Math.PI / 180); 
       return {
         transform: `translate(${radius * Math.cos(angle)}px, ${radius * Math.sin(angle)}px)`,
       };
@@ -50,12 +50,12 @@ export default {
   transform: translate(-50%, -50%);
 
   .main-button {
-    width: 80px; /* Size of the button */
-    height: 80px; /* Size of the button */
+    width: 80px; 
+    height: 80px; 
     border-radius: 50%;
     background-color: #fff;
     border: none;
-    font-size: 30px; /* Font size */
+    font-size: 30px; 
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -63,7 +63,7 @@ export default {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 
     i {
-      color: #666; /* Color of the icon */
+      color: #666; 
     }
   }
 
@@ -73,8 +73,8 @@ export default {
     left: 0;
 
     .menu-button {
-      width: 60px; /* Icon size */
-      height: 60px; /* Icon size */
+      width: 60px; 
+      height: 60px; 
       border-radius: 50%;
       background-color: #eee;
       border: none;
@@ -86,7 +86,7 @@ export default {
       justify-content: center;
 
       i {
-        font-size: 30px; /* Font size of icon */
+        font-size: 30px; 
         color: #666;
       }
     }
